@@ -90,9 +90,7 @@ public class NotificationEventProducer {
 		return new ProducerRecord<>(topic, null, key, email, recordHeaders);
 	}
 
-	private void handleFailure(Throwable ex) {
-		log.error(messageService.getMessage("error_mail_sent") + ": " + ex.getMessage(), ex);
-	}
+	
 
 	private void handleSuccess(String key, EmailEvent email, SendResult<String, Object> result) {
 		log.info(messageService.getMessage("success_mail_sent") + " key : {}, value : {}, Partition : {}", key,

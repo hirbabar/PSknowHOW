@@ -180,35 +180,6 @@ public class UserController {
 		}
 	}
 
-	@GetMapping("/login/status/standard")
-	public ResponseEntity<?> loginStatusCheck(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			Cookie authCookie = cookieUtil.getAuthCookie(request);
-			if (Objects.nonNull(authCookie) && StringUtils.isNotEmpty(authCookie.getValue())) {
-				String authToken = authCookie.getValue();
-				String userName = (String) tokenAuthenticationService.getClaim(authToken, CommonConstant.SUB);
-				User user = userService.getAuthentication(userName);
-				UserTokenAuthenticationDTO userTokenAuthenticationDTO = new UserTokenAuthenticationDTO();
-				userTokenAuthenticationDTO.setUsername(userName);
-				userTokenAuthenticationDTO.setEmail(user.getEmail());
-				Cookie cookie = cookieUtil.createAccessTokenCookie(authToken);
-				response.addCookie(cookie);
-				userTokenAuthenticationDTO.setAuthToken(cookie.getValue());
-				cookieUtil.addSameSiteCookieAttribute(response);
-				ServiceResponse serviceResponse = new ServiceResponse(true,
-						messageService.getMessage(SUCCESS_VALID_TOKEN), userTokenAuthenticationDTO);
-				return ResponseEntity.ok(serviceResponse);
-			} else {
-				ServiceResponse serviceResponse = new ServiceResponse(false,
-						messageService.getMessage(ERROR_INVALID_USER), null);
-				return ResponseEntity.ok(serviceResponse);
-			}
-		} catch (Exception e) {
-			ServiceResponse serviceResponse = new ServiceResponse(false, messageService.getMessage(ERROR_INVALID_USER),
-					null);
-			return ResponseEntity.ok(serviceResponse);
-		}
-	}
 
 	/**
 	 * @param authToken
